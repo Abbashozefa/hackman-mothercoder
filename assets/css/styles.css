@@ -1,0 +1,22 @@
+.video{
+    
+    width: 700px; 
+    height:700px; 
+}
+.btn-video-control{
+    padding: 5px;
+    font-family: "Roboto", sans-serif;
+    border-radius: 15px;
+}
+.btn-start{
+    color: #435da5;
+    border: solid #435da5 3px;
+   background-color: #f1f6fe;
+}
+.btn-stop{
+    position: relative;
+    right:460px;
+    color: red;
+    border: solid red 3px;
+    background-color: #f1f6fe;
+}

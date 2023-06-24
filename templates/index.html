@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+ <meta http-equiv="refresh" content="30" />
+ <title>video</title>
+</head>
+  <body>
+    <div class="container"><center><h2>Drunk or not</h2></center>
+      <div class="col-lg-offset-2 col-lg-8">
+        <center><form  id="todo-form"  class="form-inline" action = "/stop" method = "post" enctype="multipart/form-data">          
+          <input type = "submit" class="btn btn-danger btn-md btn-block" value="Stop">
+             </form></center>
+                <center><form  class="form-inline" action = "/start" method = "post" enctype="multipart/form-data">          
+          <input type = "submit" class="btn btn-success btn-md btn-block" value="Start">
+             </form></center><br></div>
+                    <div class="col-lg-offset-2 col-lg-8">
+         <img src="{{ url_for('video_feed') }}" width="100%">
+        </div></div>
+    </body>
+    <!-- <script type="text/javascript">
+      setTimeout(function(){
+   window.location.reload(1);
+}, 15000);
+  </script> -->
+    <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type=text/javascript>
+        $(function() {
+          $('a#test').on('click', function(e) {
+            e.preventDefault()
+            $.getJSON('/stop',
+                function(data) {
+              //do nothing
+            });
+            return false;
+          });
+        });
+</script> -->
+      <!--Jquery Cdn -->
+      <!-- <script src="https://code.jquery.com/jquery-3.5.1.js"
+      integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+      crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+$(document).on('submit','#todo-form',function(e)
+               {
+  console.log('hello');
+  e.preventDefault();
+  $.ajax({
+    type:'POST',
+    url:'/',
+    data:{
+      todo:$("#todo").val()
+    },
+    success:function()
+    {
+      alert('saved');
+    }
+  })
+});
+</script> -->
+</html>
