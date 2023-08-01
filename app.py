@@ -325,9 +325,9 @@ def home():
             axis[1].set_ylabel('Drowsiness')
             axis[1].legend()
             plt.savefig(file_path)
-            auth_id = 'MANJKWMTQ3YZLJOWI3MJ'
-            auth_token = 'ZTk0MzYwNTdkYTJkNTI2MzZlNjRlMTAyNmM0NjRj'
-            phlo_id = '71b3cd61-3d32-48e2-838f-497a4d06706e' # https://console.plivo.com/phlo/list/
+            auth_id = ''
+            auth_token = ''
+            phlo_id = '' # https://console.plivo.com/phlo/list/
             phlo_client = plivo.phlo.RestClient(auth_id=auth_id, auth_token=auth_token)
             phlo = phlo_client.phlo.get(phlo_id)
             phlo.run() 
@@ -358,9 +358,9 @@ def home():
             axis[1].set_ylabel('Drowsiness')
             axis[1].legend()
             plt.savefig(file_path)
-            auth_id = 'MANJKWMTQ3YZLJOWI3MJ'
-            auth_token = 'ZTk0MzYwNTdkYTJkNTI2MzZlNjRlMTAyNmM0NjRj'
-            phlo_id = '71b3cd61-3d32-48e2-838f-497a4d06706e' # https://console.plivo.com/phlo/list/
+            auth_id = ''
+            auth_token = ''
+            phlo_id = '' # https://console.plivo.com/phlo/list/
             phlo_client = plivo.phlo.RestClient(auth_id=auth_id, auth_token=auth_token)
             phlo = phlo_client.phlo.get(phlo_id)
             phlo.run() 
@@ -391,9 +391,9 @@ def home():
             axis[1].set_ylabel('Drowsiness')
             axis[1].legend()
             plt.savefig(file_path)
-            auth_id = 'MANJKWMTQ3YZLJOWI3MJ'
-            auth_token = 'ZTk0MzYwNTdkYTJkNTI2MzZlNjRlMTAyNmM0NjRj'
-            phlo_id = '71b3cd61-3d32-48e2-838f-497a4d06706e' # https://console.plivo.com/phlo/list/
+            auth_id = ''
+            auth_token = ''
+            phlo_id = '' # https://console.plivo.com/phlo/list/
             phlo_client = plivo.phlo.RestClient(auth_id=auth_id, auth_token=auth_token)
             phlo = phlo_client.phlo.get(phlo_id)
             phlo.run() 
@@ -424,9 +424,9 @@ def home():
             axis[1].set_ylabel('Drowsiness')
             axis[1].legend()
             plt.savefig(file_path)
-            auth_id = 'MANJKWMTQ3YZLJOWI3MJ'
-            auth_token = 'ZTk0MzYwNTdkYTJkNTI2MzZlNjRlMTAyNmM0NjRj'
-            phlo_id = '71b3cd61-3d32-48e2-838f-497a4d06706e' # https://console.plivo.com/phlo/list/
+            auth_id = ''
+            auth_token = ''
+            phlo_id = '' # https://console.plivo.com/phlo/list/
             phlo_client = plivo.phlo.RestClient(auth_id=auth_id, auth_token=auth_token)
             phlo = phlo_client.phlo.get(phlo_id)
             phlo.run() 
