@@ -2,6 +2,7 @@ from flask import Flask,request,render_template,Response,redirect
 import cv2
 import dlib
 import pickle
+import random
 # from config import Config
 # import time
 # import numpy as np
@@ -71,9 +72,7 @@ def gen_frames():
     
     Var.yawn_count=0
     
-    # MAIN LOOP IT WILL RUN ALL THE UNLESS AND
-    # UNTIL THE PROGRAM IS BEING KILLED BY THE
-    # USER
+    
     while True:
         
         
@@ -88,8 +87,6 @@ def gen_frames():
             rightEye = []
             yawn=[]
      
-            # THESE ARE THE POINTS ALLOCATION FOR THE
-            # LEFT EYES IN .DAT FILE THAT ARE FROM 42 TO 47
             for n in range(42, 48):
                 x1 = face_landmarks.part(n).x
                 y1 = face_landmarks.part(n).y
@@ -101,8 +98,7 @@ def gen_frames():
                 y2 = face_landmarks.part(next_point).y
                 cv2.line(frame, (x1, y1), (x2, y2), (0, 255, 0), 1)
      
-            # THESE ARE THE POINTS ALLOCATION FOR THE
-            # RIGHT EYES IN .DAT FILE THAT ARE FROM 36 TO 41
+            
             for n in range(36, 42):
                 x1 = face_landmarks.part(n).x
                 y1 = face_landmarks.part(n).y
@@ -150,14 +146,14 @@ def gen_frames():
                 # wave_obj = simpleaudio.WaveObject.from_wave_file("alarm.mp3")
                 # play_obj = wave_obj.play()
                 # play_obj.wait_done()
-                Var.eye_drow_sec.append(0.50)
+                Var.eye_drow_sec.append(random.uniform(0,1))
                 
 
             Var.eye_drow_sec.append(0)   
             if yawn_data > 0.5:
                 
                 Var.yawn_count=Var.yawn_count+1
-                Var.yawn_sec.append(0.50)
+                Var.yawn_sec.append(random.uniform(0,1))
                 cv2.putText(frame, "Yawning", (100, 450),
                             cv2.FONT_HERSHEY_PLAIN, 2, (21, 56, 210), 3)
                 
@@ -298,16 +294,16 @@ def home():
     print(username)
     # global t
     # global yawn_count
-    deccelerate=sum(Var.eye_drow_sec)+Var.yawn_count+sum(Var.yawn_sec)
+    deccelerate=(sum(Var.eye_drow_sec)+Var.yawn_count+sum(Var.yawn_sec))/3
     print(deccelerate)
     userdetails={'dec':deccelerate}
     print(sum(Var.eye_drow_sec))
     alert=model.predict([[sum(Var.eye_drow_sec),Var.yawn_count,sum(Var.yawn_sec)]])
     print("alert is",alert[0])
     if alert[0]==1:
-        if deccelerate>45:
+        if deccelerate>30:
             userdetails['low']='0'
-            userdetails['high']='5'
+            userdetails['high']='10'
             userdetails['color']='red'
             json_data = {'alert':'true'}   
             # name = "abbas"
@@ -316,26 +312,32 @@ def home():
             # firebase1.post("/contact", new_data)
             u = db.child("contact").child(username).update(json_data)
             print("done")
-            dr=Var.eye_drow_sec.count(0.5)
+            
             ndr=Var.eye_drow_sec.count(0)
+            dr=len(Var.eye_drow_sec)-ndr
+            figure, axis = plt.subplots(2, 1)
             file_path = str(username)+".png"
-            plt.pie([dr,ndr],labels=['Drowsiness','Awake'],colors=['red','green'])
-            plt.legend()
-    
+            figure, axis = plt.subplots(2, 1)
+            axis[0].pie([dr,ndr],labels=['Drowsiness','Awake'],colors=['red','green'])
+            axis[0].legend()
+            axis[1].plot(Var.eye_drow_sec[0:60])
+            axis[1].set_xlabel('Time')
+            axis[1].set_ylabel('Drowsiness')
+            axis[1].legend()
             plt.savefig(file_path)
-            # auth_id = 'MANJKWMTQ3YZLJOWI3MJ'
-            # auth_token = 'ZTk0MzYwNTdkYTJkNTI2MzZlNjRlMTAyNmM0NjRj'
-            # phlo_id = '71b3cd61-3d32-48e2-838f-497a4d06706e' # https://console.plivo.com/phlo/list/
-            # phlo_client = plivo.phlo.RestClient(auth_id=auth_id, auth_token=auth_token)
-            # phlo = phlo_client.phlo.get(phlo_id)
-            # phlo.run() 
+            auth_id = 'MANJKWMTQ3YZLJOWI3MJ'
+            auth_token = 'ZTk0MzYwNTdkYTJkNTI2MzZlNjRlMTAyNmM0NjRj'
+            phlo_id = '71b3cd61-3d32-48e2-838f-497a4d06706e' # https://console.plivo.com/phlo/list/
+            phlo_client = plivo.phlo.RestClient(auth_id=auth_id, auth_token=auth_token)
+            phlo = phlo_client.phlo.get(phlo_id)
+            phlo.run() 
             
             bucket = storage.bucket() # storage bucket
             blob = bucket.blob(file_path)
             blob.upload_from_filename(file_path)
-        elif deccelerate>30:
-            userdetails['low']='5'
-            userdetails['high']='10'
+        elif deccelerate>25:
+            userdetails['low']='10'
+            userdetails['high']='20'
             userdetails['color']='yellow'
             json_data = {'alert':'true'}   
             # name = "abbas"
@@ -344,26 +346,31 @@ def home():
             # firebase1.post("/contact", new_data)
             u = db.child("contact").child(username).update(json_data)
             print("done")
-            dr=Var.eye_drow_sec.count(0.5)
+            
             ndr=Var.eye_drow_sec.count(0)
+            dr=len(Var.eye_drow_sec)-ndr
             file_path = str(username)+".png"
-            plt.pie([dr,ndr],labels=['Drowsiness','Awake'],colors=['red','green'])
-            plt.legend()
-    
+            figure, axis = plt.subplots(2, 1)
+            axis[0].pie([dr,ndr],labels=['Drowsiness','Awake'],colors=['red','green'])
+            axis[0].legend()
+            axis[1].plot(Var.eye_drow_sec[0:60])
+            axis[1].set_xlabel('Time')
+            axis[1].set_ylabel('Drowsiness')
+            axis[1].legend()
             plt.savefig(file_path)
-            # auth_id = 'MANJKWMTQ3YZLJOWI3MJ'
-            # auth_token = 'ZTk0MzYwNTdkYTJkNTI2MzZlNjRlMTAyNmM0NjRj'
-            # phlo_id = '71b3cd61-3d32-48e2-838f-497a4d06706e' # https://console.plivo.com/phlo/list/
-            # phlo_client = plivo.phlo.RestClient(auth_id=auth_id, auth_token=auth_token)
-            # phlo = phlo_client.phlo.get(phlo_id)
-            # phlo.run() 
+            auth_id = 'MANJKWMTQ3YZLJOWI3MJ'
+            auth_token = 'ZTk0MzYwNTdkYTJkNTI2MzZlNjRlMTAyNmM0NjRj'
+            phlo_id = '71b3cd61-3d32-48e2-838f-497a4d06706e' # https://console.plivo.com/phlo/list/
+            phlo_client = plivo.phlo.RestClient(auth_id=auth_id, auth_token=auth_token)
+            phlo = phlo_client.phlo.get(phlo_id)
+            phlo.run() 
             
             bucket = storage.bucket() # storage bucket
             blob = bucket.blob(file_path)
             blob.upload_from_filename(file_path)
         elif deccelerate>20:
-            userdetails['low']='10'
-            userdetails['high']='12'
+            userdetails['low']='20'
+            userdetails['high']='40'
             userdetails['color']='blue'
             json_data = {'alert':'true'}   
             # name = "abbas"
@@ -372,26 +379,31 @@ def home():
             # firebase1.post("/contact", new_data)
             u = db.child("contact").child(username).update(json_data)
             print("done")
-            dr=Var.eye_drow_sec.count(0.5)
+            
             ndr=Var.eye_drow_sec.count(0)
+            dr=len(Var.eye_drow_sec)-ndr
             file_path = str(username)+".png"
-            plt.pie([dr,ndr],labels=['Drowsiness','Awake'],colors=['red','green'])
-            plt.legend()
-    
+            figure, axis = plt.subplots(2, 1)
+            axis[0].pie([dr,ndr],labels=['Drowsiness','Awake'],colors=['red','green'])
+            axis[0].legend()
+            axis[1].plot(Var.eye_drow_sec[0:60])
+            axis[1].set_xlabel('Time')
+            axis[1].set_ylabel('Drowsiness')
+            axis[1].legend()
             plt.savefig(file_path)
-            # auth_id = 'MANJKWMTQ3YZLJOWI3MJ'
-            # auth_token = 'ZTk0MzYwNTdkYTJkNTI2MzZlNjRlMTAyNmM0NjRj'
-            # phlo_id = '71b3cd61-3d32-48e2-838f-497a4d06706e' # https://console.plivo.com/phlo/list/
-            # phlo_client = plivo.phlo.RestClient(auth_id=auth_id, auth_token=auth_token)
-            # phlo = phlo_client.phlo.get(phlo_id)
-            # phlo.run() 
+            auth_id = 'MANJKWMTQ3YZLJOWI3MJ'
+            auth_token = 'ZTk0MzYwNTdkYTJkNTI2MzZlNjRlMTAyNmM0NjRj'
+            phlo_id = '71b3cd61-3d32-48e2-838f-497a4d06706e' # https://console.plivo.com/phlo/list/
+            phlo_client = plivo.phlo.RestClient(auth_id=auth_id, auth_token=auth_token)
+            phlo = phlo_client.phlo.get(phlo_id)
+            phlo.run() 
             
             bucket = storage.bucket() # storage bucket
             blob = bucket.blob(file_path)
             blob.upload_from_filename(file_path)
         else:
-            userdetails['low']='12'
-            userdetails['high']='18'
+            userdetails['low']='40'
+            userdetails['high']='50'
             userdetails['color']='green'
             json_data = {'alert':'true'}   
             # name = "abbas"
@@ -400,35 +412,46 @@ def home():
             # firebase1.post("/contact", new_data)
             u = db.child("contact").child(username).update(json_data)
             print("done")
-            dr=Var.eye_drow_sec.count(0.5)
+            
             ndr=Var.eye_drow_sec.count(0)
+            dr=len(Var.eye_drow_sec)-ndr
             file_path = str(username)+".png"
-            plt.pie([dr,ndr],labels=['Drowsiness','Awake'],colors=['red','green'])
-            plt.legend()
-    
+            figure, axis = plt.subplots(2, 1)
+            axis[0].pie([dr,ndr],labels=['Drowsiness','Awake'],colors=['red','green'])
+            axis[0].legend()
+            axis[1].plot(Var.eye_drow_sec[0:60])
+            axis[1].set_xlabel('Time')
+            axis[1].set_ylabel('Drowsiness')
+            axis[1].legend()
             plt.savefig(file_path)
-            # auth_id = 'MANJKWMTQ3YZLJOWI3MJ'
-            # auth_token = 'ZTk0MzYwNTdkYTJkNTI2MzZlNjRlMTAyNmM0NjRj'
-            # phlo_id = '71b3cd61-3d32-48e2-838f-497a4d06706e' # https://console.plivo.com/phlo/list/
-            # phlo_client = plivo.phlo.RestClient(auth_id=auth_id, auth_token=auth_token)
-            # phlo = phlo_client.phlo.get(phlo_id)
-            # phlo.run() 
+            auth_id = 'MANJKWMTQ3YZLJOWI3MJ'
+            auth_token = 'ZTk0MzYwNTdkYTJkNTI2MzZlNjRlMTAyNmM0NjRj'
+            phlo_id = '71b3cd61-3d32-48e2-838f-497a4d06706e' # https://console.plivo.com/phlo/list/
+            phlo_client = plivo.phlo.RestClient(auth_id=auth_id, auth_token=auth_token)
+            phlo = phlo_client.phlo.get(phlo_id)
+            phlo.run() 
             
             bucket = storage.bucket() # storage bucket
             blob = bucket.blob(file_path)
             blob.upload_from_filename(file_path)
     else:
-        userdetails['low']='Average'
-        userdetails['high']='Speed'
+        userdetails['low']='60'
+        userdetails['high']='80'
         userdetails['color']='green'
         json_data = {'alert':'false'}    
         u = db.child("contact").child(username).update(json_data)
         print("done")
-        dr=Var.eye_drow_sec.count(0.5)
+        
         ndr=Var.eye_drow_sec.count(0)
+        dr=len(Var.eye_drow_sec)-ndr
         file_path = str(username)+".png"
-        plt.pie([dr,ndr],labels=['Drowsiness','Awake'],colors=['red','green'])
-        plt.legend()
+        figure, axis = plt.subplots(2, 1)
+        axis[0].pie([dr,ndr],labels=['Drowsiness','Awake'],colors=['red','green'])
+        axis[0].legend()
+        axis[1].plot(Var.eye_drow_sec[0:75])
+        axis[1].set_xlabel('Time')
+        axis[1].set_ylabel('Drowsiness')
+        axis[1].legend()
         plt.savefig(file_path)
         bucket = storage.bucket() # storage bucket
         blob = bucket.blob(file_path)
